@@ -11,7 +11,17 @@ from freedom_e_sdk import _
 export target testFreedomESDKWakeAPI Unit =
   # Install Freedom E SDK into destDir
   def destDir = "build/freedom-e-sdk/test-wake"
-  def sdk = makeFreedomESDK defaultFreedomESDKBuildEnv destDir
+  def sdk =
+    def buildEnv =
+      # environment-blockci-sifive 0.7.1 has Freedom Tools 2019.05.0
+      # In order for this test to pass in the blockci environment,
+      # we have to downgrade the requested tools.
+      def blockciResources =
+        "riscv-tools/2019.05.0",
+        "python/python/3.7.1",
+        Nil
+      FreedomESDKBuildEnv blockciResources defaultFreedomESDKBuildDir
+    makeFreedomESDK buildEnv destDir
 
   def targetName = "qemu-sifive-e31"
   def coreDTS = source "{here}/bsp/{targetName}/core.dts"
