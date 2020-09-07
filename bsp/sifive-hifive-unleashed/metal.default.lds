@@ -11,8 +11,8 @@ ENTRY(_enter)
 
 MEMORY
 {
-    itim (airwx) : ORIGIN = 0x1808000, LENGTH = 0x8000
-    ram (arw!xi) : ORIGIN = 0x80000000, LENGTH = 0x1f80000000
+    itim (airwx) : ORIGIN = 0x1800000, LENGTH = 0x8000
+    ram (arw!xi) : ORIGIN = 0x90000000, LENGTH = 0x1f80000000
     rom (irx!wa) : ORIGIN = 0x20000000, LENGTH = 0x10000000
 }
 
@@ -57,7 +57,7 @@ SECTIONS
      * Note that depending on the memory layout, the bitness (32/64bit) of the
      * target, and the code model in use, this might cause a relocation error.
      */
-    __heap_size = DEFINED(__heap_size) ? __heap_size : 0x800;
+    __heap_size = DEFINED(__heap_size) ? __heap_size : 0x80000;
 
     /* The boot hart sets which hart runs the pre-main initialization routines,
      * including copying .data into RAM, zeroing the BSS region, running
@@ -65,7 +65,7 @@ SECTIONS
      * hart which runs application code unless the application overrides the
      * secondary_main() function to start execution on secondary harts.
      */
-    PROVIDE(__metal_boot_hart = 1);
+    PROVIDE(__metal_boot_hart = 0);
 
     /* The chicken bit is used by pre-main initialization to enable/disable
      * certain core features */
@@ -135,7 +135,6 @@ SECTIONS
         PROVIDE_HIDDEN ( metal_destructors_end = .);
     } >rom :rom
 
- 
 
     .ctors : {
         KEEP (*crtbegin.o(.ctors))
